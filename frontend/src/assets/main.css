@@ -1,2 +1,67 @@
 @import './base.css';
 
+@import './base.css';
+
+#app {
+  max-width: 100%;
+  margin: 0 auto;
+  /* padding: 2rem; */
+  font-weight: normal;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--bg-primary-color);
+}
+
+a,
+.green {
+  text-decoration: none;
+  color: hsla(160, 100%, 37%, 1);
+  transition: 0.4s;
+  padding: 3px;
+}
+
+@media (hover: hover) {
+  a:hover {
+    background-color: var(--color-hover)
+  }
+}
+
+@media (min-width: 1024px) {
+  body {
+    display: flex;
+    place-items: center;
+  }
+}
+
+.full-width-container {
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+.sidebar {
+  background: var(--bg-secondary-color);
+  color: var(--text-light-color);
+  height: 100vh;
+  padding: 20px 10px;
+  border-radius: 5px;
+}
+
+.nav-link {
+  color: var(--text-light-color);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 20px;
+  text-decoration: none;
+}
+
+/* .nav-link.router-link-exact-active {
+  font-weight: bold;
+  color: #ffc107;
+} */
+
+.content {
+  padding: 20px;
+  padding-top: 0;
+  padding-bottom: 0;
+}
