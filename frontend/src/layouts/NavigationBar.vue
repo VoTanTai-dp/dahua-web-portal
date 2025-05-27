@@ -32,7 +32,7 @@
                 </RouterLink>
             </div>
 
-            <div class="bottom">
+            <div class="bottom-nav">
                 <RouterLink
                     style="text-decoration: none; color: white; display:flex; justify-content:flex-start; align-items: center;"
                     class="nav-item" to="/message">
@@ -63,36 +63,85 @@
 </template>
 
 <style scoped>
+/* Sidebar chính */
 .sidebar {
     background: var(--bg-secondary-color);
     color: var(--text-light-color);
-    height: 100vh;
+    height: 100dvh;
     padding: 20px 10px;
     border-radius: 5px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
 
+/* Nav item */
+.nav-item {
+    margin-bottom: 10px;
+    padding: 8px;
+    transition: background 0.2s ease, padding 0.2s ease;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+}
+
+.nav-item:hover {
+    background: rgba(255, 255, 255, 0.1);
+    padding-left: 12px;
+}
+
+.nav-item i {
+    font-size: 2rem;
+    margin-right: 10px;
+}
+
+/* Phần nav */
 .nav {
     display: flex;
     flex-direction: column;
+    justify-content: space-between;
     height: 100%;
+    flex-wrap: nowrap;
 }
 
-.nav-item {
-    margin-bottom: 10px;
-    padding: 0;
+/* Responsive sidebar: thu gọn sidebar ở màn hình nhỏ */
+@media (max-width: 768px) {
+    .sidebar {
+        width: 60px;
+        padding: 10px 5px;
+    }
+
+    .nav-item {
+        justify-content: center;
+        padding: 8px 0;
+    }
+
+    .nav-item i {
+        margin-right: 0;
+    }
+
+    .nav-item span,
+    .nav-item-text {
+        display: none;
+    }
+
+    .top-nav,
+    .bottom-nav {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
 }
 
-.nav-item-bottom {
-    margin: 0;
+/* Mặc định màn hình lớn */
+@media (min-width: 769px) {
+    .sidebar {
+        width: 220px;
+    }
 }
 
-.top-nav {
-    align-items: flex-start;
-    flex: 1;
-}
-
-.bottom-nav {
-    align-items: flex-end;
-
+/* Smooth scrolling */
+body {
+    scroll-behavior: smooth;
 }
 </style>
