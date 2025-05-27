@@ -58,10 +58,6 @@
     width: 100%;
 }
 
-/* table{
-    margin: 10px;
-} */
-
 .tb-device {
     background-color: var(--bg-secondary-color);
     color: var(--text-light-color);
