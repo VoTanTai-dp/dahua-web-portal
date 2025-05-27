@@ -3,7 +3,9 @@
 </script>
 
 <template>
-  <h1>hello</h1>
+  <div class="container-fluid mt-3">
+    <router-view />
+  </div>
 </template>
 
 <style scoped>
