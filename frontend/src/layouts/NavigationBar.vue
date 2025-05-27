@@ -67,7 +67,7 @@
 .sidebar {
     background: var(--bg-secondary-color);
     color: var(--text-light-color);
-    height: 100dvh;
+    height: 100vh;
     padding: 20px 10px;
     border-radius: 5px;
     display: flex;
@@ -93,6 +93,10 @@
 .nav-item i {
     font-size: 2rem;
     margin-right: 10px;
+}
+
+.nav-item-bottom{
+    margin-bottom: 0 !important;
 }
 
 /* Phần nav */
