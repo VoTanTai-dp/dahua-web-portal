@@ -21,11 +21,8 @@ body,
 }
 
 body {
-  color: var(--color-text);
-  background: var(--color-background);
-  transition:
-    color 0.5s,
-    background-color 0.5s;
+  color: var(--text-light-color);
+  background: var(--bg-primary-color);
   line-height: 1.6;
   font-family:
     Inter,
@@ -41,7 +38,4 @@ body {
     'Helvetica Neue',
     sans-serif;
   font-size: 15px;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
 }
