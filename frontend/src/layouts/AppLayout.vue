@@ -18,4 +18,15 @@ import NavigationBar from './NavigationBar.vue';
     </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+.full-width-container {
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+.content {
+    padding: 20px;
+    padding-top: 0;
+    padding-bottom: 0;
+}
+</style>
