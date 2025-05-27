@@ -63,6 +63,14 @@
 </template>
 
 <style scoped>
+.sidebar {
+    background: var(--bg-secondary-color);
+    color: var(--text-light-color);
+    height: 100vh;
+    padding: 20px 10px;
+    border-radius: 5px;
+}
+
 .nav {
     display: flex;
     flex-direction: column;
