@@ -12,31 +12,3 @@
     background-color: var(--color-hover)
   }
 }
-
-.full-width-container {
-  padding-left: 20px;
-  padding-right: 20px;
-}
-
-.sidebar {
-  background: var(--bg-secondary-color);
-  color: var(--text-light-color);
-  height: 100vh;
-  padding: 20px 10px;
-  border-radius: 5px;
-}
-
-.nav-link {
-  color: var(--text-light-color);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-bottom: 20px;
-  text-decoration: none;
-}
-
-.content {
-  padding: 20px;
-  padding-top: 0;
-  padding-bottom: 0;
-}
