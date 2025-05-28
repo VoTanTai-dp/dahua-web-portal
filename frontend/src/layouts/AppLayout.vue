@@ -5,7 +5,7 @@ import NavigationBar from './NavigationBar.vue';
 </script>
 
 <template>
-    <div class="full-width-container">
+    <div class="container-fluid">
         <div class="row">
             <!-- Sidebar -->
             <navigation-bar></navigation-bar>
@@ -19,11 +19,6 @@ import NavigationBar from './NavigationBar.vue';
 </template>
 
 <style scoped>
-.full-width-container {
-    padding-left: 20px;
-    padding-right: 20px;
-}
-
 .content {
     padding: 20px;
     padding-top: 0;
