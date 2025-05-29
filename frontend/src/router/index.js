@@ -20,8 +20,13 @@ const routes = [
     //     path: 'Devices',
     //     name: 'devices',
     //     component: () => import('@/views/DevicePage.vue')
-    //   },
-    ]
+    //   }
+    ],
+  },
+  {
+    path: '/Devices',
+    name: 'devices',
+    component: () => import('@/views/DevicePage.vue')
   }
 ]
 
