@@ -5,23 +5,15 @@ import NavigationBar from './NavigationBar.vue';
 </script>
 
 <template>
-    <div class="container-fluid">
-        <div class="row">
+    <div class="d-flex">
             <!-- Sidebar -->
-            <navigation-bar></navigation-bar>
+             <div class="col-sm-2">
+                 <navigation-bar></navigation-bar>
+             </div>
 
             <!-- Main content -->
-            <div class="col-sm col-11 content">
+            <div class="col-sm-10">
                 <RouterView />
             </div>
         </div>
-    </div>
 </template>
-
-<style scoped>
-.content {
-    padding: 20px;
-    padding-top: 0;
-    padding-bottom: 0;
-}
-</style>
