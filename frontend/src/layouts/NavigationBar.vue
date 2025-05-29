@@ -3,8 +3,8 @@
 </script>
 
 <template>
-    <div class="col-1 sidebar">
-        <nav class="nav">
+    <div class="sidebar">
+        <nav class="nav flex-column h-100">
             <div class="top-nav">
                 <RouterLink
                     style="text-decoration: none; color: white; display:flex; justify-content:flex-start; align-items: center;"
@@ -67,12 +67,8 @@
 .sidebar {
     background: var(--bg-secondary-color);
     color: var(--text-light-color);
-    height: 100vh;
     padding: 20px 10px;
     border-radius: 5px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
 }
 
 /* Nav item */
@@ -81,13 +77,11 @@
     padding: 8px;
     transition: background 0.2s ease, padding 0.2s ease;
     border-radius: 8px;
-    display: flex;
-    align-items: center;
 }
 
 .nav-item:hover {
     background: rgba(255, 255, 255, 0.1);
-    padding-left: 12px;
+    padding-left: 25px;
 }
 
 .nav-item i {
@@ -101,10 +95,6 @@
 
 /* Phần nav */
 .nav {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    height: 100%;
     flex-wrap: nowrap;
 }
 
