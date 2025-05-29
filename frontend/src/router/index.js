@@ -16,6 +16,11 @@ const routes = [
         name: 'database',
         component: () => import('@/views/DatabasePage.vue')
       },
+      {
+        path: 'Setting',
+        name: 'setting',
+        component: () => import('@/views/SettingPage.vue')
+      },
     //   {
     //     path: 'Devices',
     //     name: 'devices',
