@@ -1,5 +1,4 @@
 <template>
-
     <div class="parent">
         <div class="div1">1</div>
         <div class="div2">2</div>
@@ -9,7 +8,6 @@
         <div class="div10">10</div>
         <div class="div11">11</div>
     </div>
-
 </template>
 
 <style scoped>
