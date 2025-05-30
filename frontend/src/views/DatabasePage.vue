@@ -3,7 +3,7 @@
 
 <template>
     <div class="content">
-        <div class="col-sm tb-device">
+        <div class="tb-device">
             <table>
                 <thead>
                     <tr class="tr-device">
@@ -54,21 +54,5 @@
 </template>
 
 <style scoped>
-.content {
-    width: 100%;
-}
 
-.tb-device {
-    background-color: var(--bg-secondary-color);
-    color: var(--text-light-color);
-    margin-bottom: 20px;
-    border-radius: 10px;
-}
-
-
-
-.tb-user {
-    background-color: var(--bg-secondary-color);
-    color: var(--text-light-color);
-}
 </style>
