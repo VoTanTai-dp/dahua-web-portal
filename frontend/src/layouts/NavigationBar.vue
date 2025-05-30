@@ -3,14 +3,14 @@
 </script>
 
 <template>
-    <div class="sidebar">
+    <div class="sidebar overflow-hidden">
         <nav class="nav flex-column h-100">
             <div class="top-nav">
                 <RouterLink
                     style="text-decoration: none; color: white; display:flex; justify-content:flex-start; align-items: center;"
                     class="nav-item" to="/user">
                     <i class="bi bi-person-circle" style="font-size: 2rem; margin-right: 10px;"></i>
-                    User
+                    <span>User</span>
                 </RouterLink>
                 <RouterLink
                     style="text-decoration: none; color: white; display:flex; justify-content:flex-start; align-items: center;"
@@ -69,6 +69,7 @@
     color: var(--text-light-color);
     padding: 20px 10px;
     border-radius: 5px;
+    margin-right: 20px;
 }
 
 /* Nav item */
@@ -96,42 +97,6 @@
 /* Phần nav */
 .nav {
     flex-wrap: nowrap;
-}
-
-/* Responsive sidebar: thu gọn sidebar ở màn hình nhỏ */
-@media (max-width: 768px) {
-    .sidebar {
-        width: 60px;
-        padding: 10px 5px;
-    }
-
-    .nav-item {
-        justify-content: center;
-        padding: 8px 0;
-    }
-
-    .nav-item i {
-        margin-right: 0;
-    }
-
-    .nav-item span,
-    .nav-item-text {
-        display: none;
-    }
-
-    .top-nav,
-    .bottom-nav {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-    }
-}
-
-/* Mặc định màn hình lớn */
-@media (min-width: 769px) {
-    .sidebar {
-        width: 220px;
-    }
 }
 
 /* Smooth scrolling */
