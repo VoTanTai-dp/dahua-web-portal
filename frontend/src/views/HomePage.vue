@@ -3,41 +3,34 @@
 </script>
 
 <template>
-    <!-- <div class=" full-width-container"> -->
-    <div class="row">
-        <!-- Main content -->
-            <div class="row">
-                <div class=" section cam-view">Camera View</div>
+    <!-- Main -->
+    <div class="section cam-view mb-3">Camera View</div>
+
+    <div class="extension d-flex">
+        <div class="col-6 map me-3">
+            <div class="section map-view">Map View</div>
+        </div>
+    
+        <div class="col-6">
+            <div class="count d-flex mb-3">
+                <div class="col-6 section person-count me-3">Person Count</div>
+                <div class="col-6 section vehicle-count">Vehicle Count</div>
             </div>
-            <div class="row">
-                <div class="col map">
-                    <div class="section map-view">Map View</div>
-                </div>
-
-                <div class="col sensor">
-                    <div class="row">
-                        <div class="col left-view section person-count">Person Count</div>
-                        <div class="col section vehicle-count">Vehicle Count</div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col left-view section temp-info">Temperature</div>
-                        <div class="col section humidity-info">Humidity</div>
-                    </div>
-                </div>
+    
+            <div class="sensor d-flex">
+                <div class="col-6 section temp-info me-3">Temperature</div>
+                <div class="col-6 section humidity-info">Humidity</div>
             </div>
         </div>
+    </div>
+                
     <!-- </div> -->
 </template>
 
 <style scoped>
-.row{
-    padding: 0;
-}
-
 .section {
     background: #e9ecef;
-    margin-bottom: 20px;
+    /* margin-bottom: 20px; */
     height: 200px;
     display: flex;
     align-items: center;
@@ -46,7 +39,7 @@
     border: 1px solid #ccc;
 }
 
-.cam-view {
+/* .cam-view {
     height: 500px;
     padding: 0;
 }
@@ -72,5 +65,5 @@
 .device-info {
     height: 200px;
     padding: 0;
-}
+} */
 </style>
