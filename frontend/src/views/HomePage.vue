@@ -4,26 +4,26 @@
 
 <template>
     <!-- Main -->
-    <div class="section cam-view mb-3">Camera View</div>
+    <div class="section camera mb-3">Camera View</div>
 
     <div class="extension d-flex">
-        <div class="col-6 map me-3">
-            <div class="section map-view">Map View</div>
+        <div class="col-6 me-2">
+            <div class="section map">Map View</div>
         </div>
-    
-        <div class="col-6">
+
+        <div class="col-6 row">
             <div class="count d-flex mb-3">
-                <div class="col-6 section person-count me-3">Person Count</div>
-                <div class="col-6 section vehicle-count">Vehicle Count</div>
+                <div class="col-6 section count__person">Person Count</div>
+                <div class="col-6 section count__vehicle mx-3">Vehicle Count</div>
             </div>
-    
+
             <div class="sensor d-flex">
-                <div class="col-6 section temp-info me-3">Temperature</div>
-                <div class="col-6 section humidity-info">Humidity</div>
+                <div class="col-6 section sensor__temp">Temperature</div>
+                <div class="col-6 section sensor__humidity mx-3">Humidity</div>
             </div>
         </div>
     </div>
-                
+
     <!-- </div> -->
 </template>
 
@@ -39,31 +39,4 @@
     border: 1px solid #ccc;
 }
 
-/* .cam-view {
-    height: 500px;
-    padding: 0;
-}
-
-.map {
-    padding-left: 0;
-    padding-right: 0;
-    margin-right: 20px;
-}
-
-.map-view {
-    height: 420px;
-}
-
-.left-view {
-    margin-right: 20px;
-}
-
-.person-count,
-.vehicle-count,
-.temp-info,
-.humidity-info,
-.device-info {
-    height: 200px;
-    padding: 0;
-} */
 </style>
