@@ -39,4 +39,11 @@
     border: 1px solid #ccc;
 }
 
+.camera{
+    height: 700px;
+}
+
+.map{
+    height: 415px;
+}
 </style>
