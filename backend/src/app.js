@@ -1,5 +1,7 @@
 const express = require('express');
 const cors = require('cors');
+const streamRoutes = require('./routes/stream.route');
+const streamService = require('./services/stream.service');
 
 const app = express();
 
@@ -12,5 +14,14 @@ app.get('/', (req, res) => {
         message: 'ok'
     });
 });
+
+// Serve static files
+app.use(express.static('public'));
+
+// API routes
+app.use('/api', streamRoutes);
+
+// Start WebSocket MJPEG streaming
+streamService.startStreaming();
 
 module.exports = app;
