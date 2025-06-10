@@ -1,4 +1,3 @@
-Import
 <script setup>
 import NavigationBar from './NavigationBar.vue';
 
