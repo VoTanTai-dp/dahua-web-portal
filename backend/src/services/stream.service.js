@@ -6,7 +6,7 @@ function startStreaming() {
   const wss = new WebSocket.Server({ port: config.wsPort });
 
   wss.on('connection', (ws) => {
-    console.log('✅ WebSocket client connected');
+    console.log('WebSocket client connected');
 
     const ffmpeg = spawn('ffmpeg', [
       '-i', config.rtspUrl,
@@ -28,12 +28,12 @@ function startStreaming() {
     });
 
     ws.on('close', () => {
-      console.log('❌ WebSocket client disconnected');
+      console.log('WebSocket client disconnected');
       ffmpeg.kill('SIGINT');
     });
   });
 
-  console.log(`✅ MJPEG WebSocket server running at ws://localhost:${config.wsPort}`);
+  console.log(`MJPEG WebSocket server running at ws://localhost:${config.wsPort}`);
 }
 
 module.exports = { startStreaming };
