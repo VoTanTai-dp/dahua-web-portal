@@ -30,8 +30,8 @@ function connectStream() {
             streamStore.ws = new WebSocket('ws://localhost:9999')
             streamStore.ws.binaryType = 'arraybuffer'
 
-            streamStore.ws.onopen = () => console.log('✅ WebSocket connected')
-            streamStore.ws.onerror = (err) => console.error('❌ WebSocket error', err)
+            streamStore.ws.onopen = () => console.log('WebSocket connected')
+            streamStore.ws.onerror = (err) => console.error('WebSocket error', err)
 
             router.push('/')
         })

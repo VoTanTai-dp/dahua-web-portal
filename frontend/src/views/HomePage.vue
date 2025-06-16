@@ -8,7 +8,7 @@ onMounted(() => {
     const ws = streamStore.ws
 
     if (!ws) {
-        console.warn('📡 Chưa có stream, hãy bấm Connect')
+        console.warn('Chưa có stream, hãy bấm Connect')
         return
     }
 

@@ -8,14 +8,14 @@ let currentRtspUrl = null
 function initWebSocketServer() {
   if (!wss) {
     wss = new WebSocket.Server({ port: config.wsPort })
-    console.log(`✅ MJPEG WebSocket server chạy tại ws://localhost:${config.wsPort}`)
+    console.log(`MJPEG WebSocket server chạy tại ws://localhost:${config.wsPort}`)
 
     wss.on('connection', (ws) => {
-      console.log('✅ WebSocket client connected')
+      console.log('WebSocket client connected')
 
       // Kiểm tra nếu chưa có RTSP URL thì đóng kết nối ngay
       if (!currentRtspUrl) {
-        console.log('⚠️ Chưa có RTSP URL, closing connection')
+        console.log('Chưa có RTSP URL, closing connection')
         ws.close()
         return
       }
@@ -40,7 +40,7 @@ function initWebSocketServer() {
       })
 
       ws.on('close', () => {
-        console.log('❌ WebSocket client disconnected')
+        console.log('WebSocket client disconnected')
         ffmpeg.kill('SIGINT')
       })
     })
@@ -52,7 +52,7 @@ function startStreaming(rtspUrl) {
     initWebSocketServer()
   }
   currentRtspUrl = rtspUrl
-  console.log(`📡 RTSP URL mới nhận: ${currentRtspUrl}`)
+  console.log(`RTSP URL mới nhận: ${currentRtspUrl}`)
 }
 
 module.exports = { startStreaming }
