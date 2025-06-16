@@ -103,4 +103,13 @@
 body {
     scroll-behavior: smooth;
 }
+
+/* .router-link-active {
+    background: rgba(255, 255, 255, 0.15);
+    color: #ffc107 !important;
+}
+
+.router-link-active i {
+    color: #ffc107 !important;
+} */
 </style>

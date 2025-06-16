@@ -1,10 +1,16 @@
-Import
 <script setup>
 import NavigationBar from './NavigationBar.vue';
-
 </script>
 
 <template>
+    <div class="authentication d-flex">
+        <input class="auth--item" id="username" type="text" placeholder="Username">
+        <input class="auth--item" id="password" type="password" placeholder="Password">
+        <input class="auth--item" id="ip" type="text" placeholder="IP">
+        <input class="auth--item" id="port" type="text" placeholder="Port">
+        <button class="btn">Connect</button>
+    </div>
+
     <div class="d-flex justify-content-center">
         <div class="row col-12">
             <!-- Sidebar -->
@@ -28,4 +34,13 @@ import NavigationBar from './NavigationBar.vue';
 .main{
     padding: 0;
 }
+
+.authentication{
+    margin-bottom: 20px;
+}
+
+.auth--item{
+    margin-right: 10px;
+}
+
 </style>
