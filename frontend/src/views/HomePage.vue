@@ -1,5 +1,5 @@
 <script setup>
-import { ref, watch } from 'vue'
+import { ref, onMounted, watch } from 'vue'
 import { streamStore } from '../stores/streamStore'
 
 const canvas = ref(null)
@@ -26,14 +26,24 @@ function attachStream(ws) {
     console.log('Stream attached vào canvas.')
 }
 
-// Watch streamStore.ws để gán khi có WebSocket mới
-watch(
-    () => streamStore.ws,
-    (ws) => {
-        attachStream(ws)
+onMounted(() => {
+    // Gán luôn nếu ws đã có
+    if (streamStore.ws) {
+        attachStream(streamStore.ws)
     }
-)
+
+    // Hoặc watch reactive ws
+    watch(
+        () => streamStore.ws,
+        (ws) => {
+            if (ws) {
+                attachStream(ws)
+            }
+        }
+    )
+})
 </script>
+
 
 
 <template>
