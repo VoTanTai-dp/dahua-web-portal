@@ -46,7 +46,7 @@ function connectStream() {
         <input v-model="password" class="auth--item" type="password" placeholder="Password" />
         <input v-model="ip" class="auth--item" type="text" placeholder="IP" />
         <input v-model="port" class="auth--item" type="text" placeholder="Port" />
-        <button class="btn btn-warning" @click="connectStream">Connect</button>
+        <button class="btn" @click="connectStream">Connect</button>
     </div>
 
     <div class="d-flex justify-content-center">
