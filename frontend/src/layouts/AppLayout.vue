@@ -1,24 +1,76 @@
 <script setup>
-import NavigationBar from './NavigationBar.vue';
+import NavigationBar from './NavigationBar.vue'
+import { ref } from 'vue'
+import { useRouter } from 'vue-router'
+import { streamStore } from '../stores/streamStore'
+
+const router = useRouter()
+
+const username = ref('')
+const password = ref('')
+const ip = ref('')
+const port = ref('')
+
+function connectStream() {
+    fetch('http://localhost:3000/api/start-stream', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            username: username.value,
+            password: password.value,
+            ip: ip.value,
+            port: port.value
+        })
+    })
+        .then(() => {
+            console.log('Đã khởi động stream WebSocket.')
+
+            // Tạo WebSocket và lưu vào store
+            streamStore.ws = new WebSocket('ws://localhost:9999')
+            streamStore.ws.binaryType = 'arraybuffer'
+
+            streamStore.ws.onopen = () => console.log('WebSocket connected')
+            streamStore.ws.onerror = (err) => console.error('WebSocket error', err)
+
+            // Điều hướng về trang stream
+            router.push('/')
+        })
+        .catch(err => console.error('Connect error', err))
+}
+
+function disconnectStream() {
+    if (streamStore.ws) {
+        streamStore.ws.close()
+        streamStore.ws = null
+        console.log('Stream disconnected.')
+
+        // Nếu đang ở HomePage và có canvas thì clear luôn (tuỳ option)
+        const canvas = document.querySelector('canvas')
+        if (canvas) {
+            const ctx = canvas.getContext('2d')
+            ctx.clearRect(0, 0, canvas.width, canvas.height)
+            console.log('Canvas cleared.')
+        }
+    }
+}
 </script>
 
 <template>
     <div class="authentication d-flex">
-        <input class="auth--item" id="username" type="text" placeholder="Username">
-        <input class="auth--item" id="password" type="password" placeholder="Password">
-        <input class="auth--item" id="ip" type="text" placeholder="IP">
-        <input class="auth--item" id="port" type="text" placeholder="Port">
-        <button class="btn">Connect</button>
+        <input v-model="username" class="auth--item" type="text" placeholder="Username" />
+        <input v-model="password" class="auth--item" type="password" placeholder="Password" />
+        <input v-model="ip" class="auth--item" type="text" placeholder="IP" />
+        <input v-model="port" class="auth--item" type="text" placeholder="Port" />
+        <button class="auth--item btn" @click="connectStream">Connect</button>
+        <button class="auth--item btn-disable" @click="disconnectStream">Disconnect</button>
     </div>
 
     <div class="d-flex justify-content-center">
         <div class="row col-12">
-            <!-- Sidebar -->
             <div class="left-nav col-sm-1 col-md-2 justify-content-center">
                 <navigation-bar></navigation-bar>
             </div>
 
-            <!-- Main content -->
             <div class="main col-12 col-sm-11 col-md-10 justify-content-center">
                 <RouterView />
             </div>
@@ -27,20 +79,19 @@ import NavigationBar from './NavigationBar.vue';
 </template>
 
 <style scoped>
-.left-nav{
+.left-nav {
     padding: 0;
 }
 
-.main{
+.main {
     padding: 0;
 }
 
-.authentication{
+.authentication {
     margin-bottom: 20px;
 }
 
-.auth--item{
+.auth--item {
     margin-right: 10px;
 }
-
 </style>

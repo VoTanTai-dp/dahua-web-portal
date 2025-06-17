@@ -1,34 +1,54 @@
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, watch } from 'vue'
+import { streamStore } from '../stores/streamStore'
 
 const canvas = ref(null)
 
-onMounted(() => {
-  const ctx = canvas.value.getContext('2d')
-  const ws = new WebSocket('ws://localhost:9999')
-
-  ws.binaryType = 'arraybuffer'
-
-  ws.onopen = () => console.log('WebSocket connected')
-  ws.onerror = (err) => console.error('WebSocket error', err)
-
-  ws.onmessage = (event) => {
-    const blob = new Blob([event.data], { type: 'image/jpeg' })
-    const url = URL.createObjectURL(blob)
-    const img = new Image()
-    img.onload = function () {
-      ctx.drawImage(img, 0, 0, canvas.value.width, canvas.value.height)
-      URL.revokeObjectURL(url)
+function attachStream(ws) {
+    if (!ws) {
+        console.warn('Chưa có stream WebSocket.')
+        return
     }
-    img.src = url
-  }
+
+    const ctx = canvas.value.getContext('2d')
+
+    ws.onmessage = (event) => {
+        const blob = new Blob([event.data], { type: 'image/jpeg' })
+        const url = URL.createObjectURL(blob)
+        const img = new Image()
+        img.onload = function () {
+            ctx.drawImage(img, 0, 0, canvas.value.width, canvas.value.height)
+            URL.revokeObjectURL(url)
+        }
+        img.src = url
+    }
+
+    console.log('Stream attached vào canvas.')
+}
+
+onMounted(() => {
+    // Gán luôn nếu ws đã có
+    if (streamStore.ws) {
+        attachStream(streamStore.ws)
+    }
+
+    // Hoặc watch reactive ws
+    watch(
+        () => streamStore.ws,
+        (ws) => {
+            if (ws) {
+                attachStream(ws)
+            }
+        }
+    )
 })
 </script>
 
+
+
 <template>
-    <!-- Main -->
     <div class="section camera mb-3 d-flex flex-column align-items-center justify-content-start">
-        <canvas ref="canvas" width="1390" height="700" ></canvas>
+        <canvas ref="canvas" width="1390" height="700" style="border-radius: 5px;"></canvas>
     </div>
 
     <div class="extension d-flex">
@@ -58,11 +78,12 @@ onMounted(() => {
     align-items: center;
     justify-content: center;
     font-weight: bold;
-    /* border: 1px solid #ccc; */
+    border-radius: 5px;
 }
 
 .camera {
     height: 700px;
+    background-image: url('../assets/pics/no-signal.png');
 }
 
 .map {
