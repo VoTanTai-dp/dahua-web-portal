@@ -38,6 +38,21 @@ function connectStream() {
         .catch(err => console.error('Connect error', err))
 }
 
+function disconnectStream() {
+    if (streamStore.ws) {
+        streamStore.ws.close()
+        streamStore.ws = null
+        console.log('Stream disconnected.')
+
+        // Nếu đang ở HomePage và có canvas thì clear luôn (tuỳ option)
+        const canvas = document.querySelector('canvas')
+        if (canvas) {
+            const ctx = canvas.getContext('2d')
+            ctx.clearRect(0, 0, canvas.width, canvas.height)
+            console.log('Canvas cleared.')
+        }
+    }
+}
 </script>
 
 <template>
@@ -46,7 +61,8 @@ function connectStream() {
         <input v-model="password" class="auth--item" type="password" placeholder="Password" />
         <input v-model="ip" class="auth--item" type="text" placeholder="IP" />
         <input v-model="port" class="auth--item" type="text" placeholder="Port" />
-        <button class="btn" @click="connectStream">Connect</button>
+        <button class="auth--item btn" @click="connectStream">Connect</button>
+        <button class="auth--item btn-disable" @click="disconnectStream">Disconnect</button>
     </div>
 
     <div class="d-flex justify-content-center">
