@@ -48,7 +48,7 @@ onMounted(() => {
 
 <template>
     <div class="section camera mb-3 d-flex flex-column align-items-center justify-content-start">
-        <canvas ref="canvas" width="1390" height="700"></canvas>
+        <canvas ref="canvas" width="1390" height="700" style="border-radius: 5px;"></canvas>
     </div>
 
     <div class="extension d-flex">
@@ -78,10 +78,12 @@ onMounted(() => {
     align-items: center;
     justify-content: center;
     font-weight: bold;
+    border-radius: 5px;
 }
 
 .camera {
     height: 700px;
+    background-image: url('../assets/pics/no-signal.png');
 }
 
 .map {
