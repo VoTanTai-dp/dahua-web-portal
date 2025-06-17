@@ -22,9 +22,8 @@ function connectStream() {
             port: port.value
         })
     })
-        .then(res => res.json())
-        .then(data => {
-            console.log(data.message)
+        .then(() => {
+            console.log('Đã khởi động stream WebSocket.')
 
             // Tạo WebSocket và lưu vào store
             streamStore.ws = new WebSocket('ws://localhost:9999')
@@ -33,13 +32,13 @@ function connectStream() {
             streamStore.ws.onopen = () => console.log('WebSocket connected')
             streamStore.ws.onerror = (err) => console.error('WebSocket error', err)
 
+            // Điều hướng về trang stream
             router.push('/')
         })
         .catch(err => console.error('Connect error', err))
 }
+
 </script>
-
-
 
 <template>
     <div class="authentication d-flex">

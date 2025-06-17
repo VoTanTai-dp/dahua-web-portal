@@ -1,14 +1,12 @@
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, watch } from 'vue'
 import { streamStore } from '../stores/streamStore'
 
 const canvas = ref(null)
 
-onMounted(() => {
-    const ws = streamStore.ws
-
+function attachStream(ws) {
     if (!ws) {
-        console.warn('Chưa có stream, hãy bấm Connect')
+        console.warn('Chưa có stream WebSocket.')
         return
     }
 
@@ -24,7 +22,17 @@ onMounted(() => {
         }
         img.src = url
     }
-})
+
+    console.log('Stream attached vào canvas.')
+}
+
+// Watch streamStore.ws để gán khi có WebSocket mới
+watch(
+    () => streamStore.ws,
+    (ws) => {
+        attachStream(ws)
+    }
+)
 </script>
 
 
