@@ -20,3 +20,13 @@
   border-radius: 5px !important;
   padding: 5px !important;
 }
+
+.btn-disable{
+  background-color: var(--disable-color) !important;
+  color: var(--text-disable-color) !important;
+  width: 120px;
+  border-radius: 5px !important;
+  padding: 5px !important;
+  outline: none;
+  box-shadow: none;
+}
