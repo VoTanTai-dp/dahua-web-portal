@@ -25,7 +25,6 @@
   background-color: var(--disable-color) !important;
   color: var(--text-disable-color) !important;
   width: 120px;
-  border: 1px solid #27272A !important;
   border-radius: 5px !important;
   padding: 5px !important;
 }
