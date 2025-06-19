@@ -18,7 +18,7 @@ function initWebSocketServer() {
 
 function startStreaming(rtspUrl) {
   if (!wss) {
-    console.log('⚠️ WebSocket server chưa khởi động, init lại...')
+    console.log('WebSocket server chưa khởi động, init lại...')
     initWebSocketServer()
   }
 
@@ -29,7 +29,7 @@ function startStreaming(rtspUrl) {
     console.log('Stopped old ffmpeg stream.')
   }
 
-  console.log('🎥 Starting new stream:', rtspUrl)
+  console.log('Starting new stream:', rtspUrl)
 
   ffmpegProcess = spawn('ffmpeg', [
     '-i', rtspUrl,

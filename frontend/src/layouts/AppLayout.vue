@@ -13,7 +13,7 @@ const port = ref('')
 
 function connectStream() {
     if (streamStore.ws) {
-        console.warn('⚠️ Đã có WebSocket active. Ngắt trước khi connect mới.')
+        console.warn('Đã có WebSocket active. Ngắt trước khi connect mới.')
         disconnectStream()
     }
 
