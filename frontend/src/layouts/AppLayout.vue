@@ -12,6 +12,11 @@ const ip = ref('')
 const port = ref('')
 
 function connectStream() {
+    if (streamStore.ws) {
+        console.warn('⚠️ Đã có WebSocket active. Ngắt trước khi connect mới.')
+        disconnectStream()
+    }
+
     fetch('http://localhost:3000/api/start-stream', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -25,14 +30,13 @@ function connectStream() {
         .then(() => {
             console.log('Đã khởi động stream WebSocket.')
 
-            // Tạo WebSocket và lưu vào store
+            // Tạo WebSocket mới và lưu vào store
             streamStore.ws = new WebSocket('ws://localhost:9999')
             streamStore.ws.binaryType = 'arraybuffer'
 
             streamStore.ws.onopen = () => console.log('WebSocket connected')
             streamStore.ws.onerror = (err) => console.error('WebSocket error', err)
 
-            // Điều hướng về trang stream
             router.push('/')
         })
         .catch(err => console.error('Connect error', err))
@@ -42,18 +46,23 @@ function disconnectStream() {
     if (streamStore.ws) {
         streamStore.ws.close()
         streamStore.ws = null
-        console.log('Stream disconnected.')
+        console.log('Client WebSocket closed.')
+    }
 
-        // Nếu đang ở HomePage và có canvas thì clear luôn (tuỳ option)
-        const canvas = document.querySelector('canvas')
-        if (canvas) {
-            const ctx = canvas.getContext('2d')
-            ctx.clearRect(0, 0, canvas.width, canvas.height)
-            console.log('Canvas cleared.')
-        }
+    fetch('http://localhost:3000/api/stop-stream', { method: 'POST' })
+        .then(() => console.log('Backend stream stopped.'))
+        .catch(err => console.error('Stop stream error', err))
+
+    // Clear canvas và revoke image memory nếu có
+    const canvas = document.querySelector('canvas')
+    if (canvas) {
+        const ctx = canvas.getContext('2d')
+        ctx.clearRect(0, 0, canvas.width, canvas.height)
+        console.log('Canvas cleared.')
     }
 }
 </script>
+
 
 <template>
     <div class="authentication d-flex">
