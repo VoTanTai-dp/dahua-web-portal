@@ -3,7 +3,7 @@ const { spawn } = require('child_process')
 const config = require('../config/stream.config')
 
 let wss = null
-let currentRtspUrl = null
+let ffmpegProcess = null
 
 function initWebSocketServer() {
   if (!wss) {
@@ -12,47 +12,66 @@ function initWebSocketServer() {
 
     wss.on('connection', (ws) => {
       console.log('WebSocket client connected')
-
-      // Kiểm tra nếu chưa có RTSP URL thì đóng kết nối ngay
-      if (!currentRtspUrl) {
-        console.log('Chưa có RTSP URL, closing connection')
-        ws.close()
-        return
-      }
-
-      const ffmpeg = spawn('ffmpeg', [
-        '-i', currentRtspUrl,
-        '-f', 'mjpeg',
-        '-q:v', config.jpegQuality,
-        '-vf', `scale=${config.videoScale}`,
-        '-fflags', 'nobuffer',
-        '-analyzeduration', '0',
-        '-probesize', '32',
-        '-'
-      ])
-
-      ffmpeg.stdout.on('data', (data) => {
-        ws.send(data)
-      })
-
-      ffmpeg.stderr.on('data', (data) => {
-        console.log(`FFmpeg log: ${data}`)
-      })
-
-      ws.on('close', () => {
-        console.log('WebSocket client disconnected')
-        ffmpeg.kill('SIGINT')
-      })
     })
   }
 }
 
 function startStreaming(rtspUrl) {
   if (!wss) {
+    console.log('WebSocket server chưa khởi động, init lại...')
     initWebSocketServer()
   }
-  currentRtspUrl = rtspUrl
-  console.log(`RTSP URL mới nhận: ${currentRtspUrl}`)
+
+  // Stop stream cũ nếu có
+  if (ffmpegProcess) {
+    ffmpegProcess.kill('SIGINT')
+    ffmpegProcess = null
+    console.log('Stopped old ffmpeg stream.')
+  }
+
+  console.log('Starting new stream:', rtspUrl)
+
+  ffmpegProcess = spawn('ffmpeg', [
+    '-i', rtspUrl,
+    '-f', 'mjpeg',
+    '-q:v', config.jpegQuality,
+    '-vf', `scale=${config.videoScale}`,
+    '-fflags', 'nobuffer',
+    '-analyzeduration', '0',
+    '-probesize', '32',
+    '-'
+  ])
+
+  ffmpegProcess.stdout.on('data', (data) => {
+    wss.clients.forEach((client) => {
+      if (client.readyState === WebSocket.OPEN) {
+        client.send(data)
+      }
+    })
+  })
+
+  ffmpegProcess.stderr.on('data', (data) => {
+    console.log(`FFmpeg log: ${data}`)
+  })
+
+  ffmpegProcess.on('exit', () => {
+    console.log('ffmpeg process exited.')
+  })
 }
 
-module.exports = { startStreaming }
+function stopStreaming() {
+  if (ffmpegProcess) {
+    ffmpegProcess.kill('SIGINT')
+    ffmpegProcess = null
+    console.log('Stopped ffmpeg stream.')
+  }
+
+  if (wss) {
+    wss.close(() => {
+      console.log('Closed WebSocket server.')
+    })
+    wss = null
+  }
+}
+
+module.exports = { initWebSocketServer, startStreaming, stopStreaming }
