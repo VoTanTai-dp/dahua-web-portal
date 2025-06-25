@@ -58,8 +58,14 @@ onMounted(() => {
 
         <div class="col-6 row">
             <div class="count d-flex mb-3">
-                <div class="col-6 section count__person">Person Count</div>
-                <div class="col-6 section count__vehicle mx-3">Vehicle Count</div>
+                <div class="col-6 section count__people">
+                    <span class="count__title">People</span>
+                    <div class="count__number"></div>
+                </div>
+                <div class="col-6 section count__vehicle mx-3">
+                    <span class="count__title">Vehicle</span>
+                    <div class="count__number"></div>
+                </div>
             </div>
 
             <div class="sensor d-flex">
@@ -72,11 +78,10 @@ onMounted(() => {
 
 <style scoped>
 .section {
-    background: #e9ecef;
+    background: var(--bg-secondary-color);
+    color: var(--text-light-color);
     height: 200px;
     display: flex;
-    align-items: center;
-    justify-content: center;
     font-weight: bold;
     border-radius: 5px;
 }
@@ -90,5 +95,24 @@ onMounted(() => {
 
 .map {
     height: 415px;
+}
+
+.count__people,
+.count__vehicle {
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.count__title {
+    font-size: 30px;
+    font-weight: 500;
+    padding: 10px 10px 5px;
+    margin-bottom: 10px;
+}
+
+.count__number {
+    font-size: 60px;
+    font-weight: 600;
 }
 </style>
