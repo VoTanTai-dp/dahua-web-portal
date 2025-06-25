@@ -1,15 +1,9 @@
-const express = require('express')
-const router = express.Router()
-const streamController = require('../controllers/stream.controller')
-const streamService = require('../services/stream.service')
+const express = require('express');
+const router = express.Router();
+const streamController = require('../controllers/stream.controller');
 
-router.get('/ping', streamController.healthCheck)
+router.get('/ping', streamController.healthCheck);
+router.post('/start-stream', streamController.startStream);
+router.post('/stop-stream', streamController.stopStream);
 
-router.post('/start-stream', streamController.startStream)
-
-router.post('/stop-stream', (req, res) => {
-  streamService.stopStreaming()
-  res.json({ message: 'Stopped stream.' })
-})
-
-module.exports = router
+module.exports = router;
