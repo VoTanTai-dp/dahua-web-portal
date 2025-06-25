@@ -75,7 +75,7 @@ async function disconnectStream() {
 <template>
     <div class="authentication d-flex">
         <input v-model="username" class="auth--item" type="text" placeholder="Username" />
-        <input v-model="password" class="auth--item" type="password" placeholder="Password" />
+        <input v-model="password" class="auth--item" type="text" placeholder="Password" />
         <input v-model="ip" class="auth--item" type="text" placeholder="IP" />
         <input v-model="port" class="auth--item" type="text" placeholder="Port" />
         <button class="auth--item btn" @click="connectStream">Connect</button>
