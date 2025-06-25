@@ -11,56 +11,64 @@ const password = ref('')
 const ip = ref('')
 const port = ref('')
 
-function connectStream() {
-    if (streamStore.ws) {
-        console.warn('Đã có WebSocket active. Ngắt trước khi connect mới.')
-        disconnectStream()
-    }
+async function connectStream() {
+    try {
+        if (streamStore.ws) {
+            console.warn('Đã có WebSocket active. Ngắt trước khi connect mới.');
+            await disconnectStream();
+        }
 
-    fetch('http://localhost:3000/api/start-stream', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-            username: username.value,
-            password: password.value,
-            ip: ip.value,
-            port: port.value
-        })
-    })
-        .then(() => {
-            console.log('Đã khởi động stream WebSocket.')
+        const response = await fetch('http://localhost:3000/api/start-stream', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                username: username.value,
+                password: password.value,
+                ip: ip.value,
+                port: port.value
+            })
+        });
 
-            // Tạo WebSocket mới và lưu vào store
-            streamStore.ws = new WebSocket('ws://localhost:9999')
-            streamStore.ws.binaryType = 'arraybuffer'
+        if (!response.ok) throw new Error('Start stream failed.');
 
-            streamStore.ws.onopen = () => console.log('WebSocket connected')
-            streamStore.ws.onerror = (err) => console.error('WebSocket error', err)
+        console.log('Đã khởi động stream WebSocket.');
 
-            router.push('/')
-        })
-        .catch(err => console.error('Connect error', err))
-}
+        streamStore.ws = new WebSocket('ws://localhost:9999');
+        streamStore.ws.binaryType = 'arraybuffer';
 
-function disconnectStream() {
-    if (streamStore.ws) {
-        streamStore.ws.close()
-        streamStore.ws = null
-        console.log('Client WebSocket closed.')
-    }
+        streamStore.ws.onopen = () => console.log('WebSocket connected');
+        streamStore.ws.onerror = (err) => console.error('WebSocket error', err);
 
-    fetch('http://localhost:3000/api/stop-stream', { method: 'POST' })
-        .then(() => console.log('Backend stream stopped.'))
-        .catch(err => console.error('Stop stream error', err))
-
-    // Clear canvas và revoke image memory nếu có
-    const canvas = document.querySelector('canvas')
-    if (canvas) {
-        const ctx = canvas.getContext('2d')
-        ctx.clearRect(0, 0, canvas.width, canvas.height)
-        console.log('Canvas cleared.')
+        router.push('/');
+    } catch (err) {
+        console.error('Connect error', err);
     }
 }
+
+async function disconnectStream() {
+    try {
+        if (streamStore.ws) {
+            streamStore.ws.close();
+            streamStore.ws = null;
+            console.log('Client WebSocket closed.');
+        }
+
+        const response = await fetch('http://localhost:3000/api/stop-stream', { method: 'POST' });
+        if (!response.ok) throw new Error('Stop stream failed.');
+
+        console.log('Backend stream stopped.');
+
+        const canvasEl = document.querySelector('canvas');
+        if (canvasEl) {
+            const ctx = canvasEl.getContext('2d');
+            ctx.clearRect(0, 0, canvasEl.width, canvasEl.height);
+            console.log('Canvas cleared.');
+        }
+    } catch (err) {
+        console.error('Disconnect error', err);
+    }
+}
+
 </script>
 
 
