@@ -32,9 +32,11 @@ async function startStreaming(rtspUrl) {
     console.log('Starting new stream:', rtspUrl);
 
     ffmpegProcess = spawn('ffmpeg', [
+      '-rtsp_transport', 'tcp',  // đảm bảo kết nối RTSP ổn định
       '-i', rtspUrl,
-      '-f', 'mjpeg',
-      '-pix_fmt', 'yuvj420p',               // dòng này cho chuẩn MJPEG browser-friendly
+      '-f', 'image2pipe',
+      '-vcodec', 'mjpeg',
+      '-pix_fmt', 'yuvj420p',
       '-q:v', config.jpegQuality,
       '-vf', `scale=${config.videoScale}`,
       '-fflags', 'nobuffer',

@@ -91,7 +91,7 @@ onMounted(() => {
 
 .camera {
     height: 700px;
-    /* background-image: url('../assets/pics/no-signal.png'); */
+    background-image: url('../assets/pics/no-signal.png');
     background-size: 100%;
     background-repeat: no-repeat;
 }
