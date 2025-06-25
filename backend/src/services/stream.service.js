@@ -8,7 +8,7 @@ let ffmpegProcess = null;
 function initWebSocketServer() {
   if (!wss) {
     wss = new WebSocket.Server({ port: config.wsPort });
-    console.log(`MJPEG WebSocket server chạy tại ws://localhost:${config.wsPort}`);
+    console.log(`WebSocket server chạy tại ws://localhost:${config.wsPort}`);
 
     wss.on('connection', (ws) => {
       console.log('WebSocket client connected');
@@ -32,7 +32,7 @@ async function startStreaming(rtspUrl) {
     console.log('Starting new stream:', rtspUrl);
 
     ffmpegProcess = spawn('ffmpeg', [
-      '-rtsp_transport', 'tcp',  // đảm bảo kết nối RTSP ổn định
+      '-rtsp_transport', 'tcp',
       '-i', rtspUrl,
       '-f', 'image2pipe',
       '-vcodec', 'mjpeg',
@@ -45,12 +45,26 @@ async function startStreaming(rtspUrl) {
       '-'
     ]);
 
+    let buffer = Buffer.alloc(0);
+
     ffmpegProcess.stdout.on('data', (data) => {
-      wss.clients.forEach((client) => {
-        if (client.readyState === WebSocket.OPEN) {
-          client.send(data);
-        }
-      });
+      buffer = Buffer.concat([buffer, data]);
+
+      // Tìm marker JPEG end (FFD9)
+      let marker;
+      while ((marker = buffer.indexOf(Buffer.from([0xFF, 0xD9]))) !== -1) {
+        const frameBuffer = buffer.slice(0, marker + 2);
+        buffer = buffer.slice(marker + 2);
+
+        const base64Image = frameBuffer.toString('base64');
+        const message = JSON.stringify({ type: 'frame', data: base64Image });
+
+        wss.clients.forEach((client) => {
+          if (client.readyState === WebSocket.OPEN) {
+            client.send(message);
+          }
+        });
+      }
     });
 
     ffmpegProcess.stderr.on('data', (data) => {
