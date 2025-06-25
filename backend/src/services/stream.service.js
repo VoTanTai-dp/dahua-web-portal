@@ -34,6 +34,7 @@ async function startStreaming(rtspUrl) {
     ffmpegProcess = spawn('ffmpeg', [
       '-i', rtspUrl,
       '-f', 'mjpeg',
+      '-pix_fmt', 'yuvj420p',               // dòng này cho chuẩn MJPEG browser-friendly
       '-q:v', config.jpegQuality,
       '-vf', `scale=${config.videoScale}`,
       '-fflags', 'nobuffer',

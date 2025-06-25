@@ -13,6 +13,6 @@ app.use(express.static('public'));
 
 app.use('/api', streamRoutes);
 
-streamService.startStreaming();
+// streamService.startStreaming();
 
 module.exports = app;

@@ -13,9 +13,13 @@ function attachStream(ws) {
     const ctx = canvas.value.getContext('2d')
 
     ws.onmessage = (event) => {
+        console.log('Received frame:', event.data.byteLength)
+
         const blob = new Blob([event.data], { type: 'image/jpeg' })
         const url = URL.createObjectURL(blob)
         const img = new Image()
+        img.crossOrigin = "Anonymous"  // 👈 thêm dòng này
+
         img.onload = function () {
             ctx.drawImage(img, 0, 0, canvas.value.width, canvas.value.height)
             URL.revokeObjectURL(url)
@@ -27,12 +31,10 @@ function attachStream(ws) {
 }
 
 onMounted(() => {
-    // Gán luôn nếu ws đã có
     if (streamStore.ws) {
         attachStream(streamStore.ws)
     }
 
-    // Hoặc watch reactive ws
     watch(
         () => streamStore.ws,
         (ws) => {
@@ -43,6 +45,7 @@ onMounted(() => {
     )
 })
 </script>
+
 
 
 
@@ -88,7 +91,7 @@ onMounted(() => {
 
 .camera {
     height: 700px;
-    background-image: url('../assets/pics/no-signal.png');
+    /* background-image: url('../assets/pics/no-signal.png'); */
     background-size: 100%;
     background-repeat: no-repeat;
 }
