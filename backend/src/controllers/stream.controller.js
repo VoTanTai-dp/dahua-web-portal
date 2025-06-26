@@ -1,4 +1,5 @@
 const streamService = require('../services/stream.service');
+const counterService = require('../services/counter.service');
 
 async function healthCheck(req, res) {
   res.json({ status: 'Backend API OK' });
@@ -13,11 +14,15 @@ async function startStream(req, res) {
     }
 
     const rtspUrl = `rtsp://${username}:${encodeURIComponent(password)}@${ip}:${port}/cam/realmonitor?channel=1&subtype=0`;
+
     console.log(`Received RTSP URL: ${rtspUrl}`);
 
     await streamService.startStreaming(rtspUrl);
 
-    res.json({ message: 'Đã khởi động stream WebSocket.', url: rtspUrl });
+    counterService.startCounting({ username, password, ip });
+
+    res.json({ message: 'Đã khởi động stream và counting service.', url: rtspUrl });
+
   } catch (err) {
     console.error('Start stream error:', err);
     res.status(500).json({ error: 'Start stream failed.' });
@@ -27,11 +32,16 @@ async function startStream(req, res) {
 async function stopStream(req, res) {
   try {
     await streamService.stopStreaming();
-    res.json({ message: 'Stopped stream.' });
+    counterService.stopCounting();
+    res.json({ message: 'Đã dừng stream và counting service.' });
   } catch (err) {
     console.error('Stop stream error:', err);
     res.status(500).json({ error: 'Stop stream failed.' });
   }
 }
 
-module.exports = { healthCheck, startStream, stopStream };
+module.exports = {
+  healthCheck,
+  startStream,
+  stopStream
+};

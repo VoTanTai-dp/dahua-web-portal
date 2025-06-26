@@ -36,6 +36,8 @@ async function connectStream() {
         streamStore.ws = new WebSocket('ws://localhost:9999');
         streamStore.ws.binaryType = 'arraybuffer';
 
+        streamStore.countWs = new WebSocket('ws://localhost:9998')
+
         streamStore.ws.onopen = () => console.log('WebSocket connected');
         streamStore.ws.onerror = (err) => console.error('WebSocket error', err);
 

@@ -3,43 +3,43 @@ import { ref, onMounted, watch } from 'vue'
 import { streamStore } from '../stores/streamStore'
 
 const canvas = ref(null)
+const peopleCount = ref(0)
+const vehicleCount = ref(0)
 
 function attachStream(ws) {
-    if (!ws) {
-        console.warn('Chưa có stream WebSocket.')
-        return
-    }
-
+    if (!ws) return
     const ctx = canvas.value.getContext('2d')
 
     ws.onmessage = (event) => {
         const message = JSON.parse(event.data)
         if (message.type === 'frame') {
             const img = new Image()
-            img.crossOrigin = "Anonymous"
-            img.onload = function () {
+            img.crossOrigin = 'Anonymous'
+            img.onload = () => {
                 ctx.drawImage(img, 0, 0, canvas.value.width, canvas.value.height)
             }
             img.src = 'data:image/jpeg;base64,' + message.data
         }
     }
+}
 
-    console.log('Stream attached vào canvas.')
+function attachCountStream(ws) {
+    if (!ws) return
+    ws.onmessage = (event) => {
+        const message = JSON.parse(event.data)
+        if (message.type === 'count') {
+            peopleCount.value = message.data.Human
+            vehicleCount.value = message.data.Vehicle
+        }
+    }
 }
 
 onMounted(() => {
-    if (streamStore.ws) {
-        attachStream(streamStore.ws)
-    }
+    if (streamStore.ws) attachStream(streamStore.ws)
+    if (streamStore.countWs) attachCountStream(streamStore.countWs)
 
-    watch(
-        () => streamStore.ws,
-        (ws) => {
-            if (ws) {
-                attachStream(ws)
-            }
-        }
-    )
+    watch(() => streamStore.ws, (ws) => { if (ws) attachStream(ws) })
+    watch(() => streamStore.countWs, (ws) => { if (ws) attachCountStream(ws) })
 })
 </script>
 
@@ -57,18 +57,13 @@ onMounted(() => {
             <div class="count d-flex mb-3">
                 <div class="col-6 section count__people">
                     <span class="count__title">People</span>
-                    <div class="count__number">
-                        0
-                    </div>
+                    <div class="count__number">{{ peopleCount }}</div>
                 </div>
                 <div class="col-6 section count__vehicle mx-3">
                     <span class="count__title">Vehicle</span>
-                    <div class="count__number">
-                        0
-                    </div>
+                    <div class="count__number">{{ vehicleCount }}</div>
                 </div>
             </div>
-
             <div class="sensor d-flex">
                 <div class="col-6 section sensor__temp">Temperature</div>
                 <div class="col-6 section sensor__humidity mx-3">Humidity</div>
