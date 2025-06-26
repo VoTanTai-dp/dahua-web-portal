@@ -47,6 +47,34 @@ onMounted(() => {
     <div class="section camera mb-3 d-flex flex-column align-items-center justify-content-start">
         <canvas ref="canvas" width="1390" height="700" style="border-radius: 5px;"></canvas>
     </div>
+
+    <div class="extension d-flex">
+        <div class="col-6 me-2">
+            <div class="section map">Map View</div>
+        </div>
+
+        <div class="col-6 row">
+            <div class="count d-flex mb-3">
+                <div class="col-6 section count__people">
+                    <span class="count__title">People</span>
+                    <div class="count__number">
+                        0
+                    </div>
+                </div>
+                <div class="col-6 section count__vehicle mx-3">
+                    <span class="count__title">Vehicle</span>
+                    <div class="count__number">
+                        0
+                    </div>
+                </div>
+            </div>
+
+            <div class="sensor d-flex">
+                <div class="col-6 section sensor__temp">Temperature</div>
+                <div class="col-6 section sensor__humidity mx-3">Humidity</div>
+            </div>
+        </div>
+    </div>
 </template>
 
 <style scoped>
@@ -64,5 +92,28 @@ onMounted(() => {
     background-image: url('../assets/pics/no-signal.png');
     background-size: 100%;
     background-repeat: no-repeat;
+}
+
+.map {
+    height: 415px;
+}
+
+.count__people,
+.count__vehicle{
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.count__title{
+    font-weight: 600;
+    font-size: 30px;
+    padding: 10px 10px 5px;
+}
+
+.count__number{
+    font-weight: 600;
+    font-size: 60px;
+    margin-top: 10px;
 }
 </style>
