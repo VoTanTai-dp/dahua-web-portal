@@ -64,11 +64,14 @@ async function startStreaming(rtspUrl) {
           const base64Image = frameBuffer.toString('base64');
           const message = JSON.stringify({ type: 'frame', data: base64Image });
 
-          wss.clients.forEach((client) => {
-            if (client.readyState === WebSocket.OPEN) {
-              client.send(message);
-            }
-          });
+          // 🔒 CHECK wss before accessing
+          if (wss) {
+            wss.clients.forEach((client) => {
+              if (client.readyState === WebSocket.OPEN) {
+                client.send(message);
+              }
+            });
+          }
         }
       });
 
@@ -81,7 +84,6 @@ async function startStreaming(rtspUrl) {
       });
 
       resolve();
-
     } catch (err) {
       console.error('startStreaming error:', err);
       reject(err);

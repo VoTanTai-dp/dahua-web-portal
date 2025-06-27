@@ -14,11 +14,9 @@ async function startStream(req, res) {
     }
 
     const rtspUrl = `rtsp://${username}:${encodeURIComponent(password)}@${ip}:${port}/cam/realmonitor?channel=1&subtype=0`;
-
     console.log(`Received RTSP URL: ${rtspUrl}`);
 
     await streamService.startStreaming(rtspUrl);
-
     counterService.startCounting({ username, password, ip });
 
     res.json({ message: 'Đã khởi động stream và counting service.', url: rtspUrl });
@@ -40,8 +38,4 @@ async function stopStream(req, res) {
   }
 }
 
-module.exports = {
-  healthCheck,
-  startStream,
-  stopStream
-};
+module.exports = { healthCheck, startStream, stopStream };
