@@ -28,6 +28,7 @@ function attachCountStream(ws) {
     ws.onmessage = (event) => {
         const message = JSON.parse(event.data)
         if (message.type === 'count') {
+            console.log('Count received realtime:', message.data)
             peopleCount.value = message.data.Human
             vehicleCount.value = message.data.Vehicle
         }
@@ -42,6 +43,7 @@ onMounted(() => {
     watch(() => streamStore.countWs, (ws) => { if (ws) attachCountStream(ws) })
 })
 </script>
+
 
 <template>
     <div class="section camera mb-3 d-flex flex-column align-items-center justify-content-start">
