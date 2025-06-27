@@ -1,12 +1,15 @@
-const WebSocket = require('ws');
-const counterService = require('./services/counter.service');
+// const WebSocket = require('ws');
+// const counterService = require('./services/counter.service');
 
-const wss = new WebSocket.Server({ port: 9997 }, () => {
-  console.log('Stream WebSocket server chạy tại ws://localhost:9997');
-});
+// function startCountSocketServer(port) {
+//   const wss = new WebSocket.Server({ port }, () => {
+//     console.log(`Count WebSocket server listener tại ws://localhost:${port}`);
+//   });
 
-wss.on('connection', (ws) => {
-  console.log('Stream WebSocket client connected');
+//   wss.on('connection', (ws) => {
+//     console.log('WebSocket count client connected');
+//     counterService.attachSocket(ws);
+//   });
+// }
 
-  counterService.attachSocket(ws);
-});
+// module.exports = { startCountSocketServer };
