@@ -3,13 +3,14 @@ const JSON5 = require('json5');
 
 let countWsServer;
 let count = { Human: 0, Vehicle: 0 };
+let shouldReconnect = true;
 
 async function startCounting({ username, password, ip }) {
   console.log('>>>>>>>>>> Count service started');
 
   if (!countWsServer) {
     countWsServer = new WebSocket.Server({ port: 9998 }, () => {
-      console.log('>>>>>>>>>> Count WebSocket server chạy tại ws://localhost:9998');
+      console.log('>>>>>>>>>> Count WebSocket server running at ws://localhost:9998');
     });
   }
 
@@ -18,6 +19,8 @@ async function startCounting({ username, password, ip }) {
   const urlPath = `/cgi-bin/eventManager.cgi?action=attach&codes=[CrossLineDetection]`;
 
   const connectEventStream = () => {
+    if (!shouldReconnect) return;
+
     client.fetch(`http://${ip}${urlPath}`)
       .then(res => {
         const reader = res.body.getReader();
@@ -27,16 +30,20 @@ async function startCounting({ username, password, ip }) {
           reader.read().then(({ done, value }) => {
             if (done) {
               console.log('>>>>>>>>>> Event stream closed — reconnecting in 3s...');
-              setTimeout(connectEventStream, 3000);
+              if (shouldReconnect) setTimeout(connectEventStream, 3000);
               return;
             }
 
             const str = decoder.decode(value);
-            const lines = str.split('--myboundary');  // tách từng event block
+            const lines = str.split('--myboundary');
 
             lines.forEach(line => {
-              if (line.includes('Code=CrossLineDetection') && line.includes('data=')) {
-                const match = line.match(/data=({[\s\S]*})/);  // bắt cả xuống dòng
+              if (
+                line.includes('Code=CrossLineDetection') &&
+                line.includes('data=') &&
+                line.includes('action=Start') // chỉ đếm khi action=Start
+              ) {
+                const match = line.match(/data=({[\s\S]*})/);
                 if (match) {
                   const dataStr = match[1];
                   try {
@@ -47,14 +54,16 @@ async function startCounting({ username, password, ip }) {
 
                     console.log(`>>>>>>>>>> Human: ${count.Human}, Vehicle: ${count.Vehicle}`);
 
-                    countWsServer.clients.forEach(client => {
-                      if (client.readyState === WebSocket.OPEN) {
-                        client.send(JSON.stringify({
-                          type: 'count',
-                          data: count
-                        }));
-                      }
-                    });
+                    if (countWsServer && countWsServer.clients) {
+                      countWsServer.clients.forEach(client => {
+                        if (client.readyState === WebSocket.OPEN) {
+                          client.send(JSON.stringify({
+                            type: 'count',
+                            data: count
+                          }));
+                        }
+                      });
+                    }
 
                   } catch (err) {
                     console.error('>>>>>>>>>> JSON parse error:', err.message);
@@ -67,7 +76,7 @@ async function startCounting({ username, password, ip }) {
             read();
           }).catch(err => {
             console.error('>>>>>>>>>> Read stream error:', err);
-            setTimeout(connectEventStream, 3000);
+            if (shouldReconnect) setTimeout(connectEventStream, 3000);
           });
         };
 
@@ -75,21 +84,24 @@ async function startCounting({ username, password, ip }) {
       })
       .catch(err => {
         console.error('>>>>>>>>>> Fetch event stream failed:', err);
-        setTimeout(connectEventStream, 3000);
+        if (shouldReconnect) setTimeout(connectEventStream, 3000);
       });
   };
 
+  shouldReconnect = true;
   connectEventStream();
 }
 
 function stopCounting() {
+  shouldReconnect = false;
   if (countWsServer) {
     countWsServer.close(() => {
       console.log('>>>>>>>>>> Count WebSocket server stopped');
       countWsServer = null;
     });
   }
-  count = { Human: 0, Vehicle: 0 };
+  count = { Human: 0, Vehicle: 0 }; // reset count về 0 khi stop
+  console.log(">>>>>>>>>> Check count: ", count)
 }
 
 module.exports = { startCounting, stopCounting };
