@@ -5,11 +5,11 @@ let countWsServer;
 let count = { Human: 0, Vehicle: 0 };
 
 async function startCounting({ username, password, ip }) {
-  console.log('Đã khởi động count service');
+  console.log('>>>>>>>>>> Count service started');
 
   if (!countWsServer) {
     countWsServer = new WebSocket.Server({ port: 9998 }, () => {
-      console.log('Count WebSocket server chạy tại ws://localhost:9998');
+      console.log('>>>>>>>>>> Count WebSocket server chạy tại ws://localhost:9998');
     });
   }
 
@@ -26,7 +26,7 @@ async function startCounting({ username, password, ip }) {
         const read = () => {
           reader.read().then(({ done, value }) => {
             if (done) {
-              console.log('Event stream closed — reconnecting in 3s...');
+              console.log('>>>>>>>>>> Event stream closed — reconnecting in 3s...');
               setTimeout(connectEventStream, 3000);
               return;
             }
@@ -45,7 +45,7 @@ async function startCounting({ username, password, ip }) {
                     if (dataObj.Object?.ObjectType === 'Human') count.Human++;
                     if (dataObj.Object?.ObjectType === 'Vehicle') count.Vehicle++;
 
-                    console.log(`✅ Human: ${count.Human}, Vehicle: ${count.Vehicle}`);
+                    console.log(`>>>>>>>>>> Human: ${count.Human}, Vehicle: ${count.Vehicle}`);
 
                     countWsServer.clients.forEach(client => {
                       if (client.readyState === WebSocket.OPEN) {
@@ -57,8 +57,8 @@ async function startCounting({ username, password, ip }) {
                     });
 
                   } catch (err) {
-                    console.error('❌ JSON parse error:', err.message);
-                    console.log('Raw data causing error:', dataStr);
+                    console.error('>>>>>>>>>> JSON parse error:', err.message);
+                    console.log('>>>>>>>>>> Raw data causing error:', dataStr);
                   }
                 }
               }
@@ -66,7 +66,7 @@ async function startCounting({ username, password, ip }) {
 
             read();
           }).catch(err => {
-            console.error('Read stream error:', err);
+            console.error('>>>>>>>>>> Read stream error:', err);
             setTimeout(connectEventStream, 3000);
           });
         };
@@ -74,7 +74,7 @@ async function startCounting({ username, password, ip }) {
         read();
       })
       .catch(err => {
-        console.error('Fetch event stream failed:', err);
+        console.error('>>>>>>>>>> Fetch event stream failed:', err);
         setTimeout(connectEventStream, 3000);
       });
   };
@@ -85,7 +85,7 @@ async function startCounting({ username, password, ip }) {
 function stopCounting() {
   if (countWsServer) {
     countWsServer.close(() => {
-      console.log('Đã dừng Count WebSocket server.');
+      console.log('>>>>>>>>>> Count WebSocket server stopped');
       countWsServer = null;
     });
   }

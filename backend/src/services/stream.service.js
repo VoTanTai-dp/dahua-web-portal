@@ -8,15 +8,15 @@ let ffmpegProcess = null;
 function initWebSocketServer() {
   if (!wss) {
     wss = new WebSocket.Server({ port: config.wsPort }, () => {
-      console.log(`MJPEG WebSocket server chạy tại ws://localhost:${config.wsPort}`);
+      console.log(`>>>>>>>>>> MJPEG WebSocket server running at ws://localhost:${config.wsPort}`);
     });
 
     wss.on('connection', (ws) => {
-      console.log('Stream WebSocket client connected');
+      console.log('>>>>>>>>>> Stream WebSocket client connected');
     });
 
     wss.on('close', () => {
-      console.log('MJPEG WebSocket server closed.');
+      console.log('>>>>>>>>>> MJPEG WebSocket server closed');
     });
   }
 }
@@ -25,17 +25,17 @@ async function startStreaming(rtspUrl) {
   return new Promise((resolve, reject) => {
     try {
       if (!wss) {
-        console.log('WebSocket server chưa khởi động, init lại...');
+        console.log('>>>>>>>>>> WebSocket server not started, init again...');
         initWebSocketServer();
       }
 
       if (ffmpegProcess) {
-        console.log('Dừng stream cũ...');
+        console.log('>>>>>>>>>> Stop old stream...');
         ffmpegProcess.kill('SIGINT');
         ffmpegProcess = null;
       }
 
-      console.log('Starting new stream:', rtspUrl);
+      console.log('>>>>>>>>>> Starting new stream:', rtspUrl);
 
       ffmpegProcess = spawn('ffmpeg', [
         '-rtsp_transport', 'tcp',
@@ -64,7 +64,7 @@ async function startStreaming(rtspUrl) {
           const base64Image = frameBuffer.toString('base64');
           const message = JSON.stringify({ type: 'frame', data: base64Image });
 
-          // 🔒 CHECK wss before accessing
+          // CHECK wss before accessing
           if (wss) {
             wss.clients.forEach((client) => {
               if (client.readyState === WebSocket.OPEN) {
@@ -85,7 +85,7 @@ async function startStreaming(rtspUrl) {
 
       resolve();
     } catch (err) {
-      console.error('startStreaming error:', err);
+      console.error('>>>>>>>>>> startStreaming error:', err);
       reject(err);
     }
   });
@@ -96,12 +96,12 @@ function stopStreaming() {
     if (ffmpegProcess) {
       ffmpegProcess.kill('SIGINT');
       ffmpegProcess = null;
-      console.log('Đã dừng FFmpeg stream.');
+      console.log('>>>>>>>>>> Stopped FFmpeg stream');
     }
 
     if (wss) {
       wss.close(() => {
-        console.log('WebSocket stream server closed.');
+        console.log('>>>>>>>>>> WebSocket stream server closed');
         wss = null;
         resolve();
       });

@@ -10,8 +10,8 @@ export const streamStore = reactive({
     this.ws = new WebSocket(url);
 
     this.ws.onopen = () => console.log(`Connected to stream WebSocket: ${url}`);
-    this.ws.onerror = (err) => console.error('Stream WebSocket error:', err);
-    this.ws.onclose = () => console.log('Stream WebSocket closed.');
+    this.ws.onerror = (err) => console.error('>>>>>>>>>> Stream WebSocket error:', err);
+    this.ws.onclose = () => console.log('Stream WebSocket closed');
   },
 
   connectCount(url) {
@@ -20,8 +20,8 @@ export const streamStore = reactive({
     this.countWs = new WebSocket(url);
 
     this.countWs.onopen = () => console.log(`Connected to count WebSocket: ${url}`);
-    this.countWs.onerror = (err) => console.error('Count WebSocket error:', err);
-    this.countWs.onclose = () => console.log('Count WebSocket closed.');
+    this.countWs.onerror = (err) => console.error('>>>>>>>>>> Count WebSocket error:', err);
+    this.countWs.onclose = () => console.log('Count WebSocket closed');
   },
 
   disconnectAll() {
@@ -33,6 +33,6 @@ export const streamStore = reactive({
       this.countWs.close();
       this.countWs = null;
     }
-    console.log('Đã đóng tất cả WebSocket.');
+    console.log('Closed all WebSockets');
   }
 });
