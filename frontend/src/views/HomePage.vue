@@ -67,8 +67,14 @@ onMounted(() => {
                 </div>
             </div>
             <div class="sensor d-flex">
-                <div class="col-6 section sensor__temp">Temperature</div>
-                <div class="col-6 section sensor__humidity mx-3">Humidity</div>
+                <div class="col-6 section sensor__temp">
+                    <span class="sensor__title">Temperature</span>
+                    <div class="sensor__number"></div>
+                </div>
+                <div class="col-6 section sensor__hum mx-3">
+                    <span class="sensor__title">Humidity</span>
+                    <div class="sensor__number"></div>
+                </div>
             </div>
         </div>
     </div>
@@ -96,19 +102,23 @@ onMounted(() => {
 }
 
 .count__people,
-.count__vehicle{
+.count__vehicle,
+.sensor__temp,
+.sensor__hum{
     flex-direction: column;
     justify-content: flex-start;
     align-items: center;
 }
 
-.count__title{
+.count__title,
+.sensor__title{
     font-weight: 600;
     font-size: 30px;
     padding: 10px 10px 5px;
 }
 
-.count__number{
+.count__number,
+.sensor__number{
     font-weight: 600;
     font-size: 60px;
     margin-top: 10px;
