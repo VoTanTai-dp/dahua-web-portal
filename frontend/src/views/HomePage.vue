@@ -5,8 +5,16 @@ import { streamStore } from '../stores/streamStore'
 const canvas = ref(null)
 const peopleCount = ref(0)
 const vehicleCount = ref(0)
-const temperature = ref('-')
-const humidity = ref('-')
+const temperature = ref('0 °C')
+const humidity = ref('0 %')
+
+// Hàm reset toàn bộ dữ liệu khi disconnect hoặc khởi động
+function resetData() {
+    peopleCount.value = 0
+    vehicleCount.value = 0
+    temperature.value = '0 °C'
+    humidity.value = '0 %'
+}
 
 function attachStream(ws) {
     if (!ws) return
@@ -30,7 +38,6 @@ function attachCountStream(ws) {
     ws.onmessage = (event) => {
         const message = JSON.parse(event.data)
         if (message.type === 'count') {
-            console.log('Count received realtime:', message.data)
             peopleCount.value = message.data.Human
             vehicleCount.value = message.data.Vehicle
         }
@@ -49,6 +56,8 @@ function attachSensorStream(ws) {
 }
 
 onMounted(() => {
+    resetData()
+
     if (streamStore.ws) attachStream(streamStore.ws)
     if (streamStore.countWs) attachCountStream(streamStore.countWs)
     if (streamStore.sensorWs) attachSensorStream(streamStore.sensorWs)
@@ -56,6 +65,9 @@ onMounted(() => {
     watch(() => streamStore.ws, (ws) => { if (ws) attachStream(ws) })
     watch(() => streamStore.countWs, (ws) => { if (ws) attachCountStream(ws) })
     watch(() => streamStore.sensorWs, (ws) => { if (ws) attachSensorStream(ws) })
+
+    // Lắng nghe sự kiện khi App bị Disconnect để reset UI
+    window.addEventListener('app-disconnected', resetData)
 })
 </script>
 
