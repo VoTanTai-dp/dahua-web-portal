@@ -5,6 +5,16 @@ import { streamStore } from '../stores/streamStore'
 const canvas = ref(null)
 const peopleCount = ref(0)
 const vehicleCount = ref(0)
+const temperature = ref('0 °C')
+const humidity = ref('0 %')
+
+// Hàm reset toàn bộ dữ liệu khi disconnect hoặc khởi động
+function resetData() {
+    peopleCount.value = 0
+    vehicleCount.value = 0
+    temperature.value = '0 °C'
+    humidity.value = '0 %'
+}
 
 function attachStream(ws) {
     if (!ws) return
@@ -28,22 +38,38 @@ function attachCountStream(ws) {
     ws.onmessage = (event) => {
         const message = JSON.parse(event.data)
         if (message.type === 'count') {
-            console.log('Count received realtime:', message.data)
             peopleCount.value = message.data.Human
             vehicleCount.value = message.data.Vehicle
         }
     }
 }
 
+function attachSensorStream(ws) {
+    if (!ws) return
+    ws.onmessage = (event) => {
+        const message = JSON.parse(event.data)
+        if (message.type === 'sensor') {
+            temperature.value = message.data.temperature?.toFixed(1) + ' °C'
+            humidity.value = message.data.humidity?.toFixed(1) + ' %'
+        }
+    }
+}
+
 onMounted(() => {
+    resetData()
+
     if (streamStore.ws) attachStream(streamStore.ws)
     if (streamStore.countWs) attachCountStream(streamStore.countWs)
+    if (streamStore.sensorWs) attachSensorStream(streamStore.sensorWs)
 
     watch(() => streamStore.ws, (ws) => { if (ws) attachStream(ws) })
     watch(() => streamStore.countWs, (ws) => { if (ws) attachCountStream(ws) })
+    watch(() => streamStore.sensorWs, (ws) => { if (ws) attachSensorStream(ws) })
+
+    // Lắng nghe sự kiện khi App bị Disconnect để reset UI
+    window.addEventListener('app-disconnected', resetData)
 })
 </script>
-
 
 <template>
     <div class="section camera mb-3 d-flex flex-column align-items-center justify-content-start">
@@ -67,8 +93,14 @@ onMounted(() => {
                 </div>
             </div>
             <div class="sensor d-flex">
-                <div class="col-6 section sensor__temp">Temperature</div>
-                <div class="col-6 section sensor__humidity mx-3">Humidity</div>
+                <div class="col-6 section sensor__temp">
+                    <span class="sensor__title">Temperature</span>
+                    <div class="sensor__number">{{ temperature }}</div>
+                </div>
+                <div class="col-6 section sensor__hum mx-3">
+                    <span class="sensor__title">Humidity</span>
+                    <div class="sensor__number">{{ humidity }}</div>
+                </div>
             </div>
         </div>
     </div>
@@ -96,19 +128,23 @@ onMounted(() => {
 }
 
 .count__people,
-.count__vehicle{
+.count__vehicle,
+.sensor__temp,
+.sensor__hum {
     flex-direction: column;
     justify-content: flex-start;
     align-items: center;
 }
 
-.count__title{
+.count__title,
+.sensor__title {
     font-weight: 600;
     font-size: 30px;
     padding: 10px 10px 5px;
 }
 
-.count__number{
+.count__number,
+.sensor__number {
     font-weight: 600;
     font-size: 60px;
     margin-top: 10px;

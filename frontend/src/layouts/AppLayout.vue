@@ -44,6 +44,11 @@ async function connectStream() {
         streamStore.countWs.onopen = () => console.log('Count WebSocket connected')
         streamStore.countWs.onerror = (err) => console.error('>>>>>>>>>> Count WebSocket error', err)
 
+        // Sensor WebSocket
+        streamStore.sensorWs = new WebSocket('ws://localhost:9997')
+        streamStore.sensorWs.onopen = () => console.log('Sensor WebSocket connected')
+        streamStore.sensorWs.onerror = (err) => console.error('>>>>>>>>>> Sensor WebSocket error', err)
+
         router.push('/')
     } catch (err) {
         console.error('>>>>>>>>>> Connect error', err)
@@ -62,6 +67,11 @@ async function disconnectStream() {
             streamStore.countWs = null
             console.log('Count WebSocket closed')
         }
+        if (streamStore.sensorWs) {
+            streamStore.sensorWs.close()
+            streamStore.sensorWs = null
+            console.log('Sensor WebSocket closed')
+        }
 
         const response = await fetch('http://localhost:3000/api/stop-stream', { method: 'POST' })
         if (!response.ok) throw new Error('>>>>>>>>>> Stop stream failed.')
@@ -74,13 +84,15 @@ async function disconnectStream() {
             ctx.clearRect(0, 0, canvasEl.width, canvasEl.height)
             console.log('Canvas cleared')
         }
+
+        // Emit event để các view reset lại state
+        window.dispatchEvent(new Event('app-disconnected'))
+
     } catch (err) {
         console.error('>>>>>>>>>> Disconnect error', err)
     }
 }
 </script>
-
-
 
 <template>
     <div class="authentication d-flex">
@@ -97,7 +109,6 @@ async function disconnectStream() {
             <div class="left-nav col-sm-1 col-md-2 justify-content-center">
                 <navigation-bar></navigation-bar>
             </div>
-
             <div class="main col-12 col-sm-11 col-md-10 justify-content-center">
                 <RouterView />
             </div>
