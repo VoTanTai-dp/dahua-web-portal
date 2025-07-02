@@ -33,6 +33,6 @@ setInterval(async () => {
 
     sensorController.broadcastSensor({ temperature, humidity });
   } catch (err) {
-    console.error('>>>>>>>>>> Lỗi lấy dữ liệu Home Assistant:', err.message);
+    console.error('>>>>>>>>>> Error retrieving Home Assistant data:', err.message);
   }
 }, 5000); // 5s cập nhật 1 lần

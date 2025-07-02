@@ -3,7 +3,7 @@ let sensorClients = [];
 
 function sensorSocketServer() {
   const wss = new WebSocket.Server({ port: 9997 }, () => {
-    console.log('✅ Sensor WebSocket running at ws://localhost:9997');
+    console.log('>>>>>>>>>> Sensor WebSocket running at ws://localhost:9997');
   });
 
   wss.on('connection', (ws) => {
