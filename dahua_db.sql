@@ -1,6 +1,8 @@
 CREATE DATABASE dahua_db;
 USE dahua_db;
 
+DROP DATABASE dahua_db;
+
 -- BẢNG THIẾT BỊ CAMERA
 CREATE TABLE devices (
   id INT AUTO_INCREMENT PRIMARY KEY,
