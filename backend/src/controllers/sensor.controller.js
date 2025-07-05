@@ -1,5 +1,12 @@
 const WebSocket = require('ws');
+const db = require('../services/db.service'); // Dùng để log vào DB
+
 let sensorClients = [];
+let currentSessionId = null; // sessionId hiện tại
+
+function setSessionId(id) {
+  currentSessionId = id;
+}
 
 function sensorSocketServer() {
   const wss = new WebSocket.Server({ port: 9997 }, () => {
@@ -22,9 +29,19 @@ function broadcastSensor(data) {
       ws.send(JSON.stringify({ type: 'sensor', data }));
     }
   });
+
+  // Ghi sensor vào DB nếu có sessionId và giá trị hợp lệ
+  if (
+    currentSessionId &&
+    typeof data.temperature === 'number' &&
+    typeof data.humidity === 'number'
+  ) {
+    db.logSensorData(currentSessionId, data.temperature, data.humidity);
+  }
 }
 
 module.exports = {
   sensorSocketServer,
-  broadcastSensor
+  broadcastSensor,
+  setSessionId // Export setter để controller stream truyền sessionId vào
 };
