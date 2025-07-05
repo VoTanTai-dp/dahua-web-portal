@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted, watch } from 'vue'
+import { ref, onMounted, onUnmounted, watch } from 'vue'
 import { streamStore } from '../stores/streamStore'
 
 const canvas = ref(null)
@@ -8,7 +8,7 @@ const vehicleCount = ref(0)
 const temperature = ref('0 °C')
 const humidity = ref('0 %')
 
-// Hàm reset toàn bộ dữ liệu khi disconnect hoặc khởi động
+// Reset dữ liệu khi disconnect hoặc khởi động
 function resetData() {
     peopleCount.value = 0
     vehicleCount.value = 0
@@ -18,7 +18,7 @@ function resetData() {
 
 function attachStream(ws) {
     if (!ws) return
-    const ctx = canvas.value.getContext('2d')
+    const ctx = canvas.value?.getContext('2d')
 
     ws.onmessage = (event) => {
         const message = JSON.parse(event.data)
@@ -26,7 +26,10 @@ function attachStream(ws) {
             const img = new Image()
             img.crossOrigin = 'Anonymous'
             img.onload = () => {
-                ctx.drawImage(img, 0, 0, canvas.value.width, canvas.value.height)
+                // Kiểm tra canvas trước khi dùng
+                if (canvas.value && ctx) {
+                    ctx.drawImage(img, 0, 0, canvas.value.width, canvas.value.height)
+                }
             }
             img.src = 'data:image/jpeg;base64,' + message.data
         }
@@ -66,8 +69,14 @@ onMounted(() => {
     watch(() => streamStore.countWs, (ws) => { if (ws) attachCountStream(ws) })
     watch(() => streamStore.sensorWs, (ws) => { if (ws) attachSensorStream(ws) })
 
-    // Lắng nghe sự kiện khi App bị Disconnect để reset UI
     window.addEventListener('app-disconnected', resetData)
+})
+
+// Gỡ sự kiện khi thoát khỏi view để tránh lỗi
+onUnmounted(() => {
+    if (streamStore.ws) streamStore.ws.onmessage = null
+    if (streamStore.countWs) streamStore.countWs.onmessage = null
+    if (streamStore.sensorWs) streamStore.sensorWs.onmessage = null
 })
 </script>
 

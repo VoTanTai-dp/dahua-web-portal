@@ -1,9 +1,16 @@
 const WebSocket = require('ws');
 const JSON5 = require('json5');
+const db = require('./db.service'); // Import DB service
 
 let countWsServer;
 let count = { Human: 0, Vehicle: 0 };
 let shouldReconnect = true;
+
+let currentSessionId = null; // Lưu sessionId hiện tại
+
+function setSessionId(id) {
+  currentSessionId = id;
+}
 
 async function startCounting({ username, password, ip }) {
   console.log('>>>>>>>>>> Count service started');
@@ -27,7 +34,7 @@ async function startCounting({ username, password, ip }) {
         const decoder = new TextDecoder();
 
         const read = () => {
-          reader.read().then(({ done, value }) => {
+          reader.read().then(async ({ done, value }) => {
             if (done) {
               console.log('>>>>>>>>>> Event stream closed — reconnecting in 3s...');
               if (shouldReconnect) setTimeout(connectEventStream, 3000);
@@ -37,7 +44,7 @@ async function startCounting({ username, password, ip }) {
             const str = decoder.decode(value);
             const lines = str.split('--myboundary');
 
-            lines.forEach(line => {
+            for (const line of lines) {
               if (
                 line.includes('Code=CrossLineDetection') &&
                 line.includes('data=') &&
@@ -54,6 +61,7 @@ async function startCounting({ username, password, ip }) {
 
                     console.log(`>>>>>>>>>> Human: ${count.Human}, Vehicle: ${count.Vehicle}`);
 
+                    // Gửi dữ liệu qua WebSocket
                     if (countWsServer && countWsServer.clients) {
                       countWsServer.clients.forEach(client => {
                         if (client.readyState === WebSocket.OPEN) {
@@ -65,13 +73,18 @@ async function startCounting({ username, password, ip }) {
                       });
                     }
 
+                    // Ghi dữ liệu vào DB nếu có sessionId
+                    if (currentSessionId) {
+                      await db.logCount(currentSessionId, count.Human, count.Vehicle);
+                    }
+
                   } catch (err) {
                     console.error('>>>>>>>>>> JSON parse error:', err.message);
                     console.log('>>>>>>>>>> Raw data causing error:', dataStr);
                   }
                 }
               }
-            });
+            }
 
             read();
           }).catch(err => {
@@ -101,7 +114,11 @@ function stopCounting() {
     });
   }
   count = { Human: 0, Vehicle: 0 }; // reset count về 0 khi stop
-  console.log(">>>>>>>>>> Check count: ", count)
+  console.log(">>>>>>>>>> Check count: ", count);
 }
 
-module.exports = { startCounting, stopCounting };
+module.exports = {
+  startCounting,
+  stopCounting,
+  setSessionId // Export setter
+};
